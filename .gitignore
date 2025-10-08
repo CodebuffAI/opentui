@@ -37,3 +37,9 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 .DS_Store
 
 screenshot-*.png
+
+# Workspace symlinks
+core
+react
+solid
+vue
