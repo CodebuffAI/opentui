@@ -2,6 +2,13 @@ import { EventEmitter } from "events"
 import { parseKeypress, type KeyEventType, type ParsedKey } from "./parse.keypress"
 import { ANSI } from "../ansi"
 
+function stripANSI(str: string): string {
+  return str
+    .replace(/\x1b\[[0-9;]*m/g, '')
+    .replace(/\x1b\[200~/g, '')
+    .replace(/\x1b\[201~/g, '')
+}
+
 export class KeyEvent implements ParsedKey {
   name: string
   ctrl: boolean
@@ -91,7 +98,7 @@ export class KeyHandler extends EventEmitter<KeyHandlerEventMap> {
         this.pasteMode = true
       }
       if (this.pasteMode) {
-        this.pasteBuffer.push(Bun.stripANSI(data))
+        this.pasteBuffer.push(stripANSI(data))
         if (data.endsWith(ANSI.bracketedPasteEnd)) {
           this.pasteMode = false
           this.emit("paste", new PasteEvent(this.pasteBuffer.join("")))
