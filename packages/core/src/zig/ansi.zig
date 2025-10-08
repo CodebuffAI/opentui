@@ -32,6 +32,24 @@ pub const ANSI = struct {
         std.fmt.format(writer, "\x1b[48;2;{d};{d};{d}m", .{ r, g, b }) catch return AnsiError.WriteFailed;
     }
 
+    pub fn fgColor8BitOutput(writer: anytype, r: u8, g: u8, b: u8) AnsiError!void {
+        const color_index = rgbTo8BitAnsi(r, g, b);
+        std.fmt.format(writer, "\x1b[38;5;{d}m", .{color_index}) catch return AnsiError.WriteFailed;
+    }
+
+    pub fn bgColor8BitOutput(writer: anytype, r: u8, g: u8, b: u8) AnsiError!void {
+        const color_index = rgbTo8BitAnsi(r, g, b);
+        std.fmt.format(writer, "\x1b[48;5;{d}m", .{color_index}) catch return AnsiError.WriteFailed;
+    }
+
+    fn rgbTo8BitAnsi(r: u8, g: u8, b: u8) u8 {
+        // Convert RGB to 6x6x6 color cube (colors 16-231)
+        const r6: u8 = @min(5, r / 43);
+        const g6: u8 = @min(5, g / 43);
+        const b6: u8 = @min(5, b / 43);
+        return 16 + 36 * r6 + 6 * g6 + b6;
+    }
+
     // Text attribute constants
     pub const bold = "\x1b[1m";
     pub const dim = "\x1b[2m";

@@ -172,6 +172,19 @@ export default path;
 
     if (existsSync(licensePath)) copyFileSync(licensePath, join(nativeDir, "LICENSE"))
     console.log("Built:", nativeName)
+
+    // Also copy to published package location for local development
+    const publishedPackageDir = join(rootDir, "..", "..", `core-${platform}-${arch}`)
+    if (existsSync(publishedPackageDir)) {
+      if (libraryFileName) {
+        const srcLib = join(libDir, libraryFileName)
+        const dstLib = join(publishedPackageDir, libraryFileName)
+        if (existsSync(srcLib)) {
+          copyFileSync(srcLib, dstLib)
+          console.log(`  Copied to published package: ${publishedPackageDir}/${libraryFileName}`)
+        }
+      }
+    }
   }
 }
 

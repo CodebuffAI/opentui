@@ -590,8 +590,14 @@ pub const CliRenderer = struct {
                     const bgG = rgbaComponentToU8(cell.bg[1]);
                     const bgB = rgbaComponentToU8(cell.bg[2]);
 
-                    ansi.ANSI.fgColorOutput(writer, fgR, fgG, fgB) catch {};
-                    ansi.ANSI.bgColorOutput(writer, bgR, bgG, bgB) catch {};
+                    const capabilities = self.terminal.getCapabilities();
+                    if (capabilities.rgb) {
+                        ansi.ANSI.fgColorOutput(writer, fgR, fgG, fgB) catch {};
+                        ansi.ANSI.bgColorOutput(writer, bgR, bgG, bgB) catch {};
+                    } else {
+                        ansi.ANSI.fgColor8BitOutput(writer, fgR, fgG, fgB) catch {};
+                        ansi.ANSI.bgColor8BitOutput(writer, bgR, bgG, bgB) catch {};
+                    }
 
                     ansi.TextAttributes.applyAttributesOutputWriter(writer, cell.attributes) catch {};
                 }

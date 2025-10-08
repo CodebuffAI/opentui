@@ -201,8 +201,14 @@ fn checkEnvironmentOverrides(self: *Terminal) void {
             self.caps.kitty_keyboard = false;
             self.caps.kitty_graphics = false;
             self.caps.unicode = .unicode;
-        } else if (std.mem.eql(u8, prog, "Apple_Terminal")) {
-            self.caps.unicode = .wcwidth;
+        } else {
+            self.caps.unicode = .unicode;
+            // Force RGB disable on darwin for better compatibility
+            if (builtin.os.tag == .macos) {
+                self.caps.rgb = false;
+            } else {
+                self.caps.rgb = true;
+            }
         }
     }
 
