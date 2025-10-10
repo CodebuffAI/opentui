@@ -40,9 +40,3 @@ screenshot-*.png
 
 # Codebuff-specific
 .infisical-cache
-
-# Bun workspace symlinks (convenience links to packages/)
-core
-react
-solid
-vue
