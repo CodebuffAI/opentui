@@ -186,13 +186,39 @@ export class OptimizedBuffer {
     let selectionBg: RGBA
     let selectionFg: RGBA
 
+    const computeLuminance = (color: RGBA): number => {
+      const transform = (channel: number): number =>
+        channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4)
+      return 0.2126 * transform(color.r) + 0.7152 * transform(color.g) + 0.0722 * transform(color.b)
+    }
+
+    const blend = (base: RGBA, mix: RGBA, ratio: number): RGBA => {
+      const clamp = (value: number): number => Math.min(1, Math.max(0, value))
+      return RGBA.fromValues(
+        clamp(base.r * (1 - ratio) + mix.r * ratio),
+        clamp(base.g * (1 - ratio) + mix.g * ratio),
+        clamp(base.b * (1 - ratio) + mix.b * ratio),
+        clamp(base.a * (1 - ratio) + mix.a * ratio),
+      )
+    }
+
     if (selection.bgColor) {
       selectionBg = selection.bgColor
       selectionFg = selection.fgColor || fg
     } else {
       const defaultBg = bg || RGBA.fromValues(0, 0, 0, 0)
-      selectionFg = defaultBg.a > 0 ? defaultBg : RGBA.fromValues(0, 0, 0, 1)
-      selectionBg = fg
+      const backgroundIsVisible = defaultBg.a > 0.05
+      const backgroundLuminance = backgroundIsVisible ? computeLuminance(defaultBg) : 0
+      const textLuminance = computeLuminance(fg)
+
+      if (backgroundIsVisible && backgroundLuminance > 0.6 && textLuminance < backgroundLuminance) {
+        const blendRatio = 0.18
+        selectionBg = blend(defaultBg, fg, blendRatio)
+        selectionFg = textLuminance > 0.35 ? RGBA.fromValues(0, 0, 0, 1) : fg
+      } else {
+        selectionFg = backgroundIsVisible ? defaultBg : RGBA.fromValues(0, 0, 0, 1)
+        selectionBg = fg
+      }
     }
 
     if (start > 0) {
