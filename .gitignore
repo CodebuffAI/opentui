@@ -40,3 +40,4 @@ screenshot-*.png
 
 # Codebuff-specific
 .infisical-cache
+core-darwin-arm64
