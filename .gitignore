@@ -38,7 +38,10 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
 screenshot-*.png
 
-# Workspace symlinks
+# Codebuff-specific
+.infisical-cache
+
+# Bun workspace symlinks (convenience links to packages/)
 core
 react
 solid
