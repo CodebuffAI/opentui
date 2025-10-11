@@ -41,3 +41,15 @@ screenshot-*.png
 # Codebuff-specific
 .infisical-cache
 core-darwin-arm64
+
+core
+!packages/core
+
+react
+!packages/react
+
+solid
+!packages/solid
+
+vue
+!packages/vue
