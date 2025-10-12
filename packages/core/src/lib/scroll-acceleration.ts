@@ -1,10 +1,10 @@
 export interface ScrollAcceleration {
-  tick(now?: number): number
+  tick(now?: number, direction?: "up" | "down" | "left" | "right"): number
   reset(): void
 }
 
 export class LinearScrollAccel implements ScrollAcceleration {
-  tick(_now?: number): number {
+  tick(_now?: number, _direction?: "up" | "down" | "left" | "right"): number {
     return 1
   }
 
@@ -49,7 +49,7 @@ export class MacOSScrollAccel implements ScrollAcceleration {
     } = {},
   ) {}
 
-  tick(now = Date.now()): number {
+  tick(now = Date.now(), _direction?: "up" | "down" | "left" | "right"): number {
     const A = this.opts.A ?? 0.8
     const tau = this.opts.tau ?? 3
     const maxMultiplier = this.opts.maxMultiplier ?? 6

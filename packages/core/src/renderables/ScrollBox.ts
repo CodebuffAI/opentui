@@ -338,7 +338,7 @@ export class ScrollBoxRenderable extends BoxRenderable {
 
       const baseDelta = event.scroll?.delta ?? 0
       const now = Date.now()
-      const multiplier = this.scrollAccel.tick(now)
+      const multiplier = this.scrollAccel.tick(now, dir ?? "down")
 
       if (dir === "up") {
         this.scrollTop -= baseDelta * multiplier
